@@ -1,0 +1,16 @@
+{
+  "name": "polymarket-relayer-service",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@polymarket/builder-relayer-client": "^0.0.8",
+    "@polymarket/builder-signing-sdk": "^0.0.8",
+    "viem": "^2.37.6",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2"
+  }
+}
