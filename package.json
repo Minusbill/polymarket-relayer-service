@@ -11,6 +11,9 @@
     "@polymarket/builder-signing-sdk": "^0.0.8",
     "viem": "^2.37.6",
     "dotenv": "^17.2.3",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "undici": "^6.20.1",
+    "node-fetch": "^3.3.2",
+    "socks-proxy-agent": "^8.0.3"
   }
 }

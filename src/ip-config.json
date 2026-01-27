@@ -1,0 +1,24 @@
+{
+  "default": {
+    "localIp": "127.0.0.1",
+    "proxy": {
+      "protocol": "http",
+      "host": "127.0.0.1",
+      "port": 8080,
+      "username": "",
+      "password": ""
+    }
+  },
+  "wallets": {
+    "0x0000000000000000000000000000000000000001": {
+      "localIp": "10.0.0.10",
+      "proxy": {
+        "protocol": "socks5",
+        "host": "10.0.0.20",
+        "port": 1080,
+        "username": "",
+        "password": ""
+      }
+    }
+  }
+}
