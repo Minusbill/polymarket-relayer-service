@@ -16,6 +16,11 @@ export class IpRouter {
 
   refresh() {
     this.config = readJson(this.configPath);
+    const wallets = this.config?.wallets || {};
+    this.normalizedWallets = Object.entries(wallets).reduce((acc, [address, route]) => {
+      acc[String(address).toLowerCase()] = route;
+      return acc;
+    }, {});
     return this.config;
   }
 
@@ -39,7 +44,7 @@ export class IpRouter {
   getWalletRoute(walletAddress) {
     if (!walletAddress) return this.config?.default || {};
     const normalized = String(walletAddress).toLowerCase();
-    const route = this.config?.wallets?.[normalized];
+    const route = this.normalizedWallets?.[normalized] || this.config?.wallets?.[normalized];
     if (route) return route;
     return this.config?.default || {};
   }

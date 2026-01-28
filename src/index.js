@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import { BuilderConfig } from "@polymarket/builder-signing-sdk";
+import { ProxyConfigService } from "./proxy-config-service.js";
 
 const app = express();
 app.use(express.json({ limit: "1mb" }));
@@ -31,7 +32,107 @@ const ensureCreds = (creds) => {
   }
 };
 
+const proxyConfigService = new ProxyConfigService();
+
 app.get("/health", (_, res) => {
+  res.json({ ok: true });
+});
+
+app.get("/proxy/configs/:owner", (req, res) => {
+  const { owner } = req.params || {};
+  if (!owner) {
+    res.status(400).json({ message: "缺少 owner" });
+    return;
+  }
+  const items = proxyConfigService.getByOwner(owner);
+  res.json({ items });
+});
+
+app.post("/proxy/configs", (req, res) => {
+  const { owner } = req.body || {};
+  if (!owner) {
+    res.status(400).json({ message: "缺少 owner" });
+    return;
+  }
+  const items = proxyConfigService.getByOwner(owner);
+  res.json({ items });
+});
+
+app.post("/proxy/configs/query", (req, res) => {
+  const { owner } = req.body || {};
+  if (!owner) {
+    res.status(400).json({ message: "缺少 owner" });
+    return;
+  }
+  const items = proxyConfigService.getByOwner(owner);
+  res.json({ items });
+});
+
+app.post("/proxy/configs/sync-owner-wallets", (req, res) => {
+  const { owner, addresses } = req.body || {};
+  if (!owner) {
+    res.status(400).json({ message: "缺少 owner" });
+    return;
+  }
+  if (!Array.isArray(addresses)) {
+    res.status(400).json({ message: "缺少 addresses" });
+    return;
+  }
+  proxyConfigService.updateOwner(owner, addresses);
+  res.json({ ok: true });
+});
+
+app.post("/proxy/wallets/update", (req, res) => {
+  const { owner, address, proxy } = req.body || {};
+  if (!owner) {
+    res.status(400).json({ message: "缺少 owner" });
+    return;
+  }
+  if (!address) {
+    res.status(400).json({ message: "缺少 address" });
+    return;
+  }
+  if (!proxyConfigService.isOwnedBy(owner, address)) {
+    res.status(403).json({ message: "无权限" });
+    return;
+  }
+  if (!proxy || typeof proxy !== "object") {
+    res.status(400).json({ message: "缺少 proxy" });
+    return;
+  }
+  proxyConfigService.updateWallet(address, proxy);
+  res.json({ ok: true });
+});
+
+app.post("/proxy/wallets/remove", (req, res) => {
+  const { owner, address } = req.body || {};
+  if (!owner) {
+    res.status(400).json({ message: "缺少 owner" });
+    return;
+  }
+  if (!address) {
+    res.status(400).json({ message: "缺少 address" });
+    return;
+  }
+  if (!proxyConfigService.isOwnedBy(owner, address)) {
+    res.status(403).json({ message: "无权限" });
+    return;
+  }
+  proxyConfigService.removeWallet(address);
+  res.json({ ok: true });
+});
+
+app.post("/proxy/wallets/batch-sync", (req, res) => {
+  const { owner, items } = req.body || {};
+  if (!owner) {
+    res.status(400).json({ message: "缺少 owner" });
+    return;
+  }
+  if (!Array.isArray(items)) {
+    res.status(400).json({ message: "缺少 items" });
+    return;
+  }
+  proxyConfigService.batchSync(owner, items);
   res.json({ ok: true });
 });
 
